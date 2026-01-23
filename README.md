@@ -1,6 +1,6 @@
 # Grand-Arena-Ticket-Booking-System – Design Overview
 
-This project implements a **concurrency-safe ticket reservation system** using **:contentReference[oaicite:0]{index=0}** and **:contentReference[oaicite:1]{index=1}**.  
+This project implements a **concurrency-safe ticket reservation system** using FastAPI and PostgreSQL.  
 It is designed to handle **high traffic**, **prevent double booking**, and enforce **time-bound seat reservations**.
 
 ---
