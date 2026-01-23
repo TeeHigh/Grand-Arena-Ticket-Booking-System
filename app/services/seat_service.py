@@ -87,8 +87,6 @@ class SeatService:
 
         if seat.reserved_by_user_id != user_id:
             raise ValueError("Seat is reserved by another user")
-        else:
-            return seat
 
         seat.status = SeatStatus.CONFIRMED
 

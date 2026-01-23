@@ -3,6 +3,8 @@ from sqlalchemy import func
 from app.db.session import SessionLocal
 from app.models.seat import Seat
 from app.models.enums import SeatStatus
+from sqlalchemy import update, and_
+from datetime import datetime, timezone
 
 
 def cleanup_expired_seats():
@@ -33,3 +35,29 @@ def cleanup_expired_seats():
 
     finally:
         db.close()
+
+
+@staticmethod
+def bulk_release_expired(db: Session) -> int:
+    now = datetime.now(timezone.utc)
+    
+    stmt = (
+        update(Seat)
+        .where(
+            and_(
+                Seat.status == SeatStatus.RESERVED,
+                Seat.reservation_expires_at < now
+            )
+        )
+        .values(
+            status=SeatStatus.AVAILABLE,
+            reserved_by_user_id=None,
+            reserved_at=None,
+            reservation_expires_at=None
+        )
+        .execution_options(synchronize_session="fetch")
+    )
+    
+    result = db.execute(stmt)
+    db.commit()
+    return result.rowcount
